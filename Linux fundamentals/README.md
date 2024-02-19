@@ -6,6 +6,8 @@
 uname -i
 ```
 
+![alt text](https://github.com/rahardian-dwi-saputra/htb-academy-walkthrough/blob/main/Linux%20fundamentals/assets/linux%20fundamental%201.JPG)
+
 ```sh
 x86_64
 ```
@@ -14,6 +16,8 @@ x86_64
 ```sh
 pwd
 ```
+
+![alt text](https://github.com/rahardian-dwi-saputra/htb-academy-walkthrough/blob/main/Linux%20fundamentals/assets/linux%20fundamental%202.JPG)
 
 ```sh
 /home/htb-student
@@ -24,6 +28,8 @@ pwd
 echo "$MAIL"
 ```
 
+![alt text](https://github.com/rahardian-dwi-saputra/htb-academy-walkthrough/blob/main/Linux%20fundamentals/assets/linux%20fundamental%203.JPG)
+
 ```sh
 /var/mail/htb-student
 ```
@@ -32,6 +38,8 @@ echo "$MAIL"
 ```sh
 echo "$SHELL"
 ```
+
+![alt text](https://github.com/rahardian-dwi-saputra/htb-academy-walkthrough/blob/main/Linux%20fundamentals/assets/linux%20fundamental%204.JPG)
 
 ```sh
 /bin/bash
@@ -42,6 +50,8 @@ echo "$SHELL"
 uname -r
 ```
 
+![alt text](https://github.com/rahardian-dwi-saputra/htb-academy-walkthrough/blob/main/Linux%20fundamentals/assets/linux%20fundamental%205.JPG)
+
 ```sh
 4.15.0
 ```
@@ -50,6 +60,8 @@ uname -r
 ```sh
 ifconfig
 ```
+
+![alt text](https://github.com/rahardian-dwi-saputra/htb-academy-walkthrough/blob/main/Linux%20fundamentals/assets/linux%20fundamental%206.JPG)
 
 ```sh
 ens192
@@ -61,6 +73,8 @@ ens192
 ls -la
 ```
 
+![alt text](https://github.com/rahardian-dwi-saputra/htb-academy-walkthrough/blob/main/Linux%20fundamentals/assets/linux%20fundamental%207.JPG)
+
 ```sh
 .bash_history
 ```
@@ -69,6 +83,8 @@ ls -la
 ```sh
 ls -i /etc | grep sudoers
 ```
+
+![alt text](https://github.com/rahardian-dwi-saputra/htb-academy-walkthrough/blob/main/Linux%20fundamentals/assets/linux%20fundamental%208.JPG)
 
 ```sh
 147627
@@ -80,6 +96,8 @@ ls -i /etc | grep sudoers
 ls -la -t /var/backups
 ```
 
+![alt text](https://github.com/rahardian-dwi-saputra/htb-academy-walkthrough/blob/main/Linux%20fundamentals/assets/linux%20fundamental%209.JPG)
+
 ```sh
 apt.extended_states.0
 ```
@@ -88,6 +106,8 @@ apt.extended_states.0
 ```sh
 ls -i /var/backups/shadow.bak
 ```
+
+![alt text](https://github.com/rahardian-dwi-saputra/htb-academy-walkthrough/blob/main/Linux%20fundamentals/assets/linux%20fundamental%2010.JPG)
 
 ```sh
 265293
@@ -99,6 +119,8 @@ ls -i /var/backups/shadow.bak
 find / -type f -name *.conf -newermt 2020-03-03 -size -28k -size +25k 2>/dev/null
 ```
 
+![alt text](https://github.com/rahardian-dwi-saputra/htb-academy-walkthrough/blob/main/Linux%20fundamentals/assets/linux%20fundamental%2011.JPG)
+
 ```sh
 00-mesa-defaults.conf
 ```
@@ -108,6 +130,8 @@ find / -type f -name *.conf -newermt 2020-03-03 -size -28k -size +25k 2>/dev/nul
 find / -type f -name *.bak 2>/dev/null | wc -l
 ```
 
+![alt text](https://github.com/rahardian-dwi-saputra/htb-academy-walkthrough/blob/main/Linux%20fundamentals/assets/linux%20fundamental%2012.JPG)
+
 ```sh
 4
 ```
@@ -116,6 +140,8 @@ find / -type f -name *.bak 2>/dev/null | wc -l
 ```sh
 which xxd
 ```
+
+![alt text](https://github.com/rahardian-dwi-saputra/htb-academy-walkthrough/blob/main/Linux%20fundamentals/assets/linux%20fundamental%2013.JPG)
 
 ```sh
 /usr/bin/xxd
@@ -127,6 +153,8 @@ which xxd
 find / -type f -name *.log 2>/dev/null | wc -l
 ```
 
+![alt text](https://github.com/rahardian-dwi-saputra/htb-academy-walkthrough/blob/main/Linux%20fundamentals/assets/linux%20fundamental%2014.JPG)
+
 ```sh
 32
 ```
@@ -134,6 +162,8 @@ find / -type f -name *.log 2>/dev/null | wc -l
 ```sh
 apt list --installed | grep -c "installed"
 ```
+
+![alt text](https://github.com/rahardian-dwi-saputra/htb-academy-walkthrough/blob/main/Linux%20fundamentals/assets/linux%20fundamental%2015.JPG)
 
 ```sh
 737
@@ -145,6 +175,8 @@ apt list --installed | grep -c "installed"
 netstat -tlpn | grep -v "127.0.0." | grep -v tcp6 | grep -c LISTEN
 ```
 
+![alt text](https://github.com/rahardian-dwi-saputra/htb-academy-walkthrough/blob/main/Linux%20fundamentals/assets/linux%20fundamental%2016.JPG)
+
 ```sh
 737
 ```
@@ -153,6 +185,8 @@ netstat -tlpn | grep -v "127.0.0." | grep -v tcp6 | grep -c LISTEN
 ```sh
 ps aux | grep proftpd
 ```
+
+![alt text](https://github.com/rahardian-dwi-saputra/htb-academy-walkthrough/blob/main/Linux%20fundamentals/assets/linux%20fundamental%2017.JPG)
 
 ```sh
 proftpd
