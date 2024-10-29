@@ -4,3 +4,22 @@ HTB Academy adalah tempat pembelajaran keamanan siber bagi para pengguna untuk m
 ## Requirement
 - Silahkan membuat akun HTB terlebih dahulu di link https://account.hackthebox.com/register  
 - Gunakan sistem operasi kali linux atau varian linux lainnya untuk mempraktekkan materi di modul
+
+## VPN Setup
+- Setelah berhasil login ke HTB Academy, klik foto profil dan pilih VPN Settings
+
+![alt text](https://github.com/rahardian-dwi-saputra/htb-academy-walkthrough/blob/main/setup/setup%201.JPG)
+
+- Download VPN Conection File
+
+![alt text](https://github.com/rahardian-dwi-saputra/htb-academy-walkthrough/blob/main/setup/setup%202.JPG)
+
+- Lakukan koneksi ke VPN melalui terminal
+```sh
+sudo openvpn nama_file
+```
+
+![alt text](https://github.com/rahardian-dwi-saputra/htb-academy-walkthrough/blob/main/setup/setup%203.JPG)
+
+## Modul
+- [Linux Fundamentals](Linux%20fundamentals)
