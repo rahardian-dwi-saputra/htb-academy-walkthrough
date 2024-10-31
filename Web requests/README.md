@@ -186,3 +186,66 @@ curl -X POST -b 'PHPSESSID=cookie' -H 'Content-Type:application/json' -d '{"sear
 ```sh
 HTB{p0$t_r3p34t3r}
 ```
+
+## CRUD API
+- Jalankan web target terlebih dahulu
+
+![alt text](https://github.com/rahardian-dwi-saputra/htb-academy-walkthrough/blob/main/Web%20requests/assets/web%20request%2038.JPG)
+
+![alt text](https://github.com/rahardian-dwi-saputra/htb-academy-walkthrough/blob/main/Web%20requests/assets/web%20request%2039.JPG)
+
+- **Question:** First, try to update any city's name to be 'flag'. Then, delete any city. Once done, search for a city named 'flag' to get the flag.
+- Install jq jika belum terinstall
+```sh
+sudo apt install jq
+```
+
+![alt text](https://github.com/rahardian-dwi-saputra/htb-academy-walkthrough/blob/main/Web%20requests/assets/web%20request%2040.JPG)
+
+- Akses endpoint `/city` untuk mendapatkan daftar seluruh kota
+```sh
+curl -s http://ip:port/api.php/city | jq
+```
+
+![alt text](https://github.com/rahardian-dwi-saputra/htb-academy-walkthrough/blob/main/Web%20requests/assets/web%20request%2041.JPG)
+
+- Tambahkan parameter nama kota untuk mencari nama kota tertentu
+```sh
+curl -s http://ip:port/api.php/city/{city_name} | jq
+```
+
+![alt text](https://github.com/rahardian-dwi-saputra/htb-academy-walkthrough/blob/main/Web%20requests/assets/web%20request%2042.JPG)
+
+- Sekarang kita ubah nama salah satu kota, misalnya `London` menjadi `flag`
+```sh
+curl -X PUT -d '{"city_name":"flag"}' http://ip:port/api.php/city/{city_name}
+```
+
+![alt text](https://github.com/rahardian-dwi-saputra/htb-academy-walkthrough/blob/main/Web%20requests/assets/web%20request%2043.JPG)
+
+- Untuk pengecekan kita bisa akses endpoint `/city` untuk memastikan nama kota `London` menjadi `flag`
+
+![alt text](https://github.com/rahardian-dwi-saputra/htb-academy-walkthrough/blob/main/Web%20requests/assets/web%20request%2044.JPG)
+
+- Sekarang kita coba hapus salah satu nama kota, misalnya nama kota `Leeds`
+```sh
+curl -X DELETE http://ip:port/api.php/city/leeds
+```
+
+![alt text](https://github.com/rahardian-dwi-saputra/htb-academy-walkthrough/blob/main/Web%20requests/assets/web%20request%2045.JPG)
+
+- Untuk pengecekan kita bisa melakukan pencarian data dengan nama kota `Leeds`. Jika datanya kosong maka data tersebut berhasil dihapus
+
+![alt text](https://github.com/rahardian-dwi-saputra/htb-academy-walkthrough/blob/main/Web%20requests/assets/web%20request%2046.JPG)
+
+- Sekarang kita melakukan pencarian data dengan nama kota `flag` untuk mendapatkan flag
+```sh
+curl -s http://ip:port/api.php/city/flag | jq
+```
+
+![alt text](https://github.com/rahardian-dwi-saputra/htb-academy-walkthrough/blob/main/Web%20requests/assets/web%20request%2047.JPG)
+
+- **Answer:**
+```sh
+HTB{crud_4p!_m4n!pul4t0r}
+```
