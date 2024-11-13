@@ -25,3 +25,4 @@ sudo openvpn nama_file
 - [Linux Fundamentals](Linux%20fundamentals)
 - [Web Requests](Web%20requests)
 - [Introduction to Web Applications](Introduction%20to%20Web%20Applications)
+- [Web Fuzzing](Web%20Fuzzing)
