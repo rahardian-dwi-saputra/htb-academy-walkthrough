@@ -169,3 +169,85 @@ curl -d "y=SUNWmc" http://ip:port/post.php
 ```sh
 HTB{p0st_fuzz1ng_succ3ss}
 ```
+
+## Virtual Host and Subdomain Fuzzing
+- Jalankan web target terlebih dahulu
+
+![alt text](https://github.com/rahardian-dwi-saputra/htb-academy-walkthrough/blob/main/Web%20Fuzzing/assets/web%20fuzzing%2031.JPG)
+
+![alt text](https://github.com/rahardian-dwi-saputra/htb-academy-walkthrough/blob/main/Web%20Fuzzing/assets/web%20fuzzing%2032.JPG)
+
+- **Question:** Using GoBuster against the target system to fuzz for vhosts using the common.txt wordlist, which vhost starts with the prefix "web-"? Respond with the full vhost, eg web-123.inlanefreight.htb.
+- Pada percobaan kali ini, kita akan menggunakan tool `gobuster`. Tool ini secara default belum tersedia di kali linux sehingga anda perlu menginstalasi terlebih dahulu dengan perintah sebagai berikut
+```sh
+sudo apt install gobuster
+```
+- Tambahkan IP ke file `/etc/hosts` terlebih dahulu
+```sh
+echo "ip inlanefreight.htb" | sudo tee -a /etc/hosts
+```
+
+![alt text](https://github.com/rahardian-dwi-saputra/htb-academy-walkthrough/blob/main/Web%20Fuzzing/assets/web%20fuzzing%2033.JPG)
+
+- Jalankan tool `gobuster` untuk menemukan vhost
+```sh
+gobuster vhost -u http://inlanefreight.htb:port -w /usr/share/seclists/Discovery/Web-Content/common.txt --append-domain
+```
+
+![alt text](https://github.com/rahardian-dwi-saputra/htb-academy-walkthrough/blob/main/Web%20Fuzzing/assets/web%20fuzzing%2034.JPG)
+
+- **Answer:**
+```sh
+web-beans.inlanefreight.htb
+```
+
+- **Question:** Using GoBuster against inlanefreight.com to fuzz for subdomains using the subdomains-top1million-5000.txt wordlist, which subdomain starts with the prefix "su"? Respond with the full vhost, eg web.inlanefreight.com.
+- Jalankan tool `gobuster` untuk menemukan subdomain
+```sh
+gobuster dns -d inlanefreight.com -w /usr/share/seclists/Discovery/DNS/subdomains-top1million-5000.txt
+```
+
+![alt text](https://github.com/rahardian-dwi-saputra/htb-academy-walkthrough/blob/main/Web%20Fuzzing/assets/web%20fuzzing%2035.JPG)
+
+- **Answer:**
+```sh
+support.inlanefreight.com
+```
+
+## Filtering Fuzzing Output
+- Jalankan web target terlebih dahulu
+
+![alt text](https://github.com/rahardian-dwi-saputra/htb-academy-walkthrough/blob/main/Web%20Fuzzing/assets/web%20fuzzing%2036.JPG)
+
+![alt text](https://github.com/rahardian-dwi-saputra/htb-academy-walkthrough/blob/main/Web%20Fuzzing/assets/web%20fuzzing%2037.JPG)
+
+- **Question:** What flag do you find when successfully fuzzing the POST parameter?
+- Akses halaman `/post.php` menggunakan tool `curl`. Setelah diakses muncul pesan bahwa halaman tersebut harus diakses dengan nama parameter `y`
+```sh
+curl -d "" http://ip:port/post.php
+```
+
+![alt text](https://github.com/rahardian-dwi-saputra/htb-academy-walkthrough/blob/main/Web%20Fuzzing/assets/web%20fuzzing%2038.JPG)
+
+- Selanjutnya kita coba jalankan tool `ffuf` untuk menemukan nilai parameter `y` yang sesuai
+```sh
+ffuf -w /usr/share/seclists/Discovery/Web-Content/common.txt -u http://ip:port/post.php -X POST -H "Content-Type: application/x-www-form-urlencoded" -d "y=FUZZ" -fc 403 -c -ic
+```
+
+![alt text](https://github.com/rahardian-dwi-saputra/htb-academy-walkthrough/blob/main/Web%20Fuzzing/assets/web%20fuzzing%2039.JPG)
+
+- Setelah dijalankan kita menemukan nilai parameter yang sesuai yaitu `SUNWmc`
+
+![alt text](https://github.com/rahardian-dwi-saputra/htb-academy-walkthrough/blob/main/Web%20Fuzzing/assets/web%20fuzzing%2040.JPG)
+
+- Sekarang kita coba post data tersebut menggunakan tool `curl`
+```sh
+curl -d "y=SUNWmc" http://ip:port/post.php
+```
+
+![alt text](https://github.com/rahardian-dwi-saputra/htb-academy-walkthrough/blob/main/Web%20Fuzzing/assets/web%20fuzzing%2041.JPG)
+
+- **Answer:**
+```sh
+HTB{p0st_fuzz1ng_succ3ss}
+```
