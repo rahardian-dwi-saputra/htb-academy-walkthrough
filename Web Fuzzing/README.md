@@ -251,3 +251,78 @@ curl -d "y=SUNWmc" http://ip:port/post.php
 ```sh
 HTB{p0st_fuzz1ng_succ3ss}
 ```
+
+## Validating Findings
+- Jalankan web target terlebih dahulu
+
+![alt text](https://github.com/rahardian-dwi-saputra/htb-academy-walkthrough/blob/main/Web%20Fuzzing/assets/web%20fuzzing%2042.JPG)
+
+![alt text](https://github.com/rahardian-dwi-saputra/htb-academy-walkthrough/blob/main/Web%20Fuzzing/assets/web%20fuzzing%2043.JPG)
+
+- **Question:** Fuzz the target system using directory-list-2.3-medium.txt, looking for a hidden directory. Once you have found the hidden directory, responsibly determine the validity of the vulnerability by analyzing the tar.gz file in the directory. Answer using the full Content-Length header, eg "Content-Length: 1337"
+- Jalankan tool `gobuster` untuk menemukan halaman tersembunyi
+```sh
+gobuster dir -u http://ip:port/ -w /usr/share/seclists/Discovery/Web-Content/directory-list-2.3-medium.txt
+```
+
+![alt text](https://github.com/rahardian-dwi-saputra/htb-academy-walkthrough/blob/main/Web%20Fuzzing/assets/web%20fuzzing%2044.JPG)
+
+- Ditemukan halaman `/ur-hiddenmember` pada hasil pencarian diatas. Setelah dicek di browser dihalaman tersebut terdapat file `backup.tar.gz` sehingga kita tidak perlu melanjutkan proses pencarian pada tool `gobuster`. Tekan `Ctrl+C` untuk menghentikan prosesnya
+
+![alt text](https://github.com/rahardian-dwi-saputra/htb-academy-walkthrough/blob/main/Web%20Fuzzing/assets/web%20fuzzing%2045.JPG)
+
+- Lakukan pengecekan dengan tool `curl`
+```sh
+curl -I http://ip:port/ur-hiddenmember/backup.tar.gz
+```
+
+![alt text](https://github.com/rahardian-dwi-saputra/htb-academy-walkthrough/blob/main/Web%20Fuzzing/assets/web%20fuzzing%2046.JPG)
+
+- **Answer:**
+```sh
+Content-Length: 210
+```
+
+## API Fuzzing
+- Jalankan web target terlebih dahulu
+
+![alt text](https://github.com/rahardian-dwi-saputra/htb-academy-walkthrough/blob/main/Web%20Fuzzing/assets/web%20fuzzing%2047.JPG)
+
+![alt text](https://github.com/rahardian-dwi-saputra/htb-academy-walkthrough/blob/main/Web%20Fuzzing/assets/web%20fuzzing%2048.JPG)
+
+- **Question:** What is the value returned by the endpoint that the api fuzzer has identified?
+- Install tool `webfuzz_api` terlebih dahulu
+```sh
+git clone https://github.com/PandaSt0rm/webfuzz_api.git
+```
+
+![alt text](https://github.com/rahardian-dwi-saputra/htb-academy-walkthrough/blob/main/Web%20Fuzzing/assets/web%20fuzzing%2049.JPG)
+
+- Install depedensi tool `webfuzz_api`
+```sh
+cd webfuzz_api
+pip3 install -r requirements.txt
+```
+
+![alt text](https://github.com/rahardian-dwi-saputra/htb-academy-walkthrough/blob/main/Web%20Fuzzing/assets/web%20fuzzing%2050.JPG)
+
+- Jalankan program `api_fuzzer.py` untuk menemukan endpoint API dan tunggu hingga proses selesai
+```sh
+python3 api_fuzzer.py http://94.237.60.154:36918
+```
+
+![alt text](https://github.com/rahardian-dwi-saputra/htb-academy-walkthrough/blob/main/Web%20Fuzzing/assets/web%20fuzzing%2051.JPG)
+
+![alt text](https://github.com/rahardian-dwi-saputra/htb-academy-walkthrough/blob/main/Web%20Fuzzing/assets/web%20fuzzing%2052.JPG)
+
+- Dari hasil tool diatas ditemukan endpoint `/czcmdcvt`. Sekarang kita akses endpoint tersebut menggunakan tool `curl` untuk mendapatkan flag
+```sh
+curl http://ip:port/czcmdcvt
+```
+
+![alt text](https://github.com/rahardian-dwi-saputra/htb-academy-walkthrough/blob/main/Web%20Fuzzing/assets/web%20fuzzing%2053.JPG)
+
+- **Answer:**
+```sh
+h1dd3n_r357
+```
