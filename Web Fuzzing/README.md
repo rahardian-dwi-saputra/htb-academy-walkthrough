@@ -291,7 +291,7 @@ Content-Length: 210
 ![alt text](https://github.com/rahardian-dwi-saputra/htb-academy-walkthrough/blob/main/Web%20Fuzzing/assets/web%20fuzzing%2048.JPG)
 
 - **Question:** What is the value returned by the endpoint that the api fuzzer has identified?
-- Install tool `webfuzz_api` terlebih dahulu
+- Install tool [webfuzz_api](https://github.com/PandaSt0rm/webfuzz_api) terlebih dahulu
 ```sh
 git clone https://github.com/PandaSt0rm/webfuzz_api.git
 ```
@@ -308,7 +308,7 @@ pip3 install -r requirements.txt
 
 - Jalankan program `api_fuzzer.py` untuk menemukan endpoint API dan tunggu hingga proses selesai
 ```sh
-python3 api_fuzzer.py http://94.237.60.154:36918
+python3 api_fuzzer.py http://ip:port
 ```
 
 ![alt text](https://github.com/rahardian-dwi-saputra/htb-academy-walkthrough/blob/main/Web%20Fuzzing/assets/web%20fuzzing%2051.JPG)
@@ -325,4 +325,106 @@ curl http://ip:port/czcmdcvt
 - **Answer:**
 ```sh
 h1dd3n_r357
+```
+
+## Skills Assessment
+- Jalankan web target terlebih dahulu
+
+![alt text](https://github.com/rahardian-dwi-saputra/htb-academy-walkthrough/blob/main/Web%20Fuzzing/assets/web%20fuzzing%2054.JPG)
+
+![alt text](https://github.com/rahardian-dwi-saputra/htb-academy-walkthrough/blob/main/Web%20Fuzzing/assets/web%20fuzzing%2055.JPG)
+
+- **Question:** After completing all steps in the assessment, you will be presented with a page that contains a flag in the format of HTB{...}. What is that flag?
+- Lakukan pencarian halaman tersembunyi dengan tool `gobuster`
+```sh
+gobuster dir -u http://ip:port/ -w /usr/share/seclists/Discovery/Web-Content/common.txt
+```
+
+![alt text](https://github.com/rahardian-dwi-saputra/htb-academy-walkthrough/blob/main/Web%20Fuzzing/assets/web%20fuzzing%2056.JPG)
+
+- Pada percobaan pertama ditemukan direktori `/admin`. Sekarang kita coba cari halaman tersembunyi dibalik direktori `/admin` yang berekstensi `.php` dan `.html` dengan tool `gobuster`
+```sh
+gobuster dir -u http://ip:port/admin/ -w /usr/share/seclists/Discovery/Web-Content/common.txt -x .php,.html
+```
+
+![alt text](https://github.com/rahardian-dwi-saputra/htb-academy-walkthrough/blob/main/Web%20Fuzzing/assets/web%20fuzzing%2057.JPG)
+
+![alt text](https://github.com/rahardian-dwi-saputra/htb-academy-walkthrough/blob/main/Web%20Fuzzing/assets/web%20fuzzing%2058.JPG)
+
+- Dari percobaan kedua ditemukan halaman `/panel.php`. Sekarang akses halaman tersebut menggunakan tool `curl` maka muncul pesan bahwa halaman tersebut harus diakses dengan paramaeter `accessID`
+```sh
+curl http://ip:port/admin/panel.php
+```
+
+![alt text](https://github.com/rahardian-dwi-saputra/htb-academy-walkthrough/blob/main/Web%20Fuzzing/assets/web%20fuzzing%2059.JPG)
+
+- Selanjutnya kita cari nilai parameter yang sesuai dengan tool `ffuf`. Pada percobaan pertama terlalu banyak temuan halaman dengan ukuran 58 sehingga kita melakukan percobaan ulang dengan filter ukuran 58
+```sh
+ffuf -w /usr/share/seclists/Discovery/Web-Content/common.txt -u http://ip:port/admin/panel.php?accessID=FUZZ -c -ic -fs 58
+```
+
+![alt text](https://github.com/rahardian-dwi-saputra/htb-academy-walkthrough/blob/main/Web%20Fuzzing/assets/web%20fuzzing%2060.JPG)
+
+![alt text](https://github.com/rahardian-dwi-saputra/htb-academy-walkthrough/blob/main/Web%20Fuzzing/assets/web%20fuzzing%2061.JPG)
+
+- Pada percobaan diatas ditemukan nilai parameter `getaccess`, selanjutnya kita coba akses menggunakan tool `curl`
+```sh
+curl http://ip:port/admin/panel.php?accessID=getaccess
+```
+
+![alt text](https://github.com/rahardian-dwi-saputra/htb-academy-walkthrough/blob/main/Web%20Fuzzing/assets/web%20fuzzing%2062.JPG)
+
+- Ditemukan petunjuk bahwa kita harus melakukan fuzzing vhost dengan nama domain `fuzzing_fun.htb` untuk itu kita perlu menambahkan IP web target ke file `/etc/hosts`
+```sh
+echo "ip fuzzing_fun.htb" | sudo tee -a /etc/hosts
+```
+
+![alt text](https://github.com/rahardian-dwi-saputra/htb-academy-walkthrough/blob/main/Web%20Fuzzing/assets/web%20fuzzing%2063.JPG)
+
+- Setelah berhasil ditambahkan, akses domain tersebut menggunakan tool `curl`
+```sh
+curl http://fuzzing_fun.htb:port
+```
+
+![alt text](https://github.com/rahardian-dwi-saputra/htb-academy-walkthrough/blob/main/Web%20Fuzzing/assets/web%20fuzzing%2064.JPG)
+
+- Ditemukan bahwa titik awal berada di folder `/godeep` namun kita perlu menemukan vhost yang lain sehingga kita gunakan tool `ffuf` untuk menemukan sub domain yang lain
+```sh
+ffuf -w /usr/share/seclists/Discovery/Web-Content/common.txt -u http://fuzzing_fun.htb:port -H 'Host: FUZZ.fuzzing_fun.htb' -fc 403 -c -ic
+```
+
+![alt text](https://github.com/rahardian-dwi-saputra/htb-academy-walkthrough/blob/main/Web%20Fuzzing/assets/web%20fuzzing%2065.JPG)
+
+![alt text](https://github.com/rahardian-dwi-saputra/htb-academy-walkthrough/blob/main/Web%20Fuzzing/assets/web%20fuzzing%2066.JPG)
+
+- Ditemukan sub domain `hidden` sehingga kita perlu menambahkan sub domain tersebut ke file `/etc/hosts`
+```sh
+echo "ip hidden.fuzzing_fun.htb" | sudo tee -a /etc/hosts
+```
+
+![alt text](https://github.com/rahardian-dwi-saputra/htb-academy-walkthrough/blob/main/Web%20Fuzzing/assets/web%20fuzzing%2067.JPG)
+
+- Berikut kita coba temukan folder web tersembunyi lainnya dibalik folder `/godeep` menggunakan domain `hidden.fuzzing_fun.htb` dengan tool `ffuf` secara rekursif agar dapat menemukan path secara keseluruhan
+```sh
+ffuf -w /usr/share/seclists/Discovery/Web-Content/common.txt -u http://hidden.fuzzing_fun.htb:port/godeep/FUZZ -fc 403 -c -ic -recursion
+```
+
+![alt text](https://github.com/rahardian-dwi-saputra/htb-academy-walkthrough/blob/main/Web%20Fuzzing/assets/web%20fuzzing%2068.JPG)
+
+- Pada iterasi terakhir ditemukan path halaman `/godeep/stoneedge/bbclone/typo3/` lalu selanjutnya ditemukan halaman `index.php` sehingga secara keseluruhan URL nya adalah `http://hidden.fuzzing_fun.htb:port/godeep/stoneedge/bbclone/typo3/index.php`
+
+![alt text](https://github.com/rahardian-dwi-saputra/htb-academy-walkthrough/blob/main/Web%20Fuzzing/assets/web%20fuzzing%2069.JPG)
+
+![alt text](https://github.com/rahardian-dwi-saputra/htb-academy-walkthrough/blob/main/Web%20Fuzzing/assets/web%20fuzzing%2070.JPG)
+
+- Akses halaman tersebut menggunakan tool `curl`
+```sh
+curl http://hidden.fuzzing_fun.htb:port/godeep/stoneedge/bbclone/typo3/index.php
+```
+
+![alt text](https://github.com/rahardian-dwi-saputra/htb-academy-walkthrough/blob/main/Web%20Fuzzing/assets/web%20fuzzing%2071.JPG)
+
+- **Answer:**
+```sh
+HTB{w3b_fuzz1ng_sk1lls}
 ```
