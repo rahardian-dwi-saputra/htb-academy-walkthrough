@@ -26,3 +26,4 @@ sudo openvpn nama_file
 - [Web Requests](Web%20requests)
 - [Introduction to Web Applications](Introduction%20to%20Web%20Applications)
 - [Web Fuzzing](Web%20Fuzzing)
+- [Attacking Web Applications with Ffuf](Attacking%20Web%20Applications%20with%20Ffuf)
