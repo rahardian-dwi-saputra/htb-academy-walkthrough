@@ -187,3 +187,144 @@ curl -d "id=73" http://admin.academy.htb:port/admin/admin.php
 ```sh
 HTB{p4r4m373r_fuzz1n6_15_k3y!}
 ```
+
+## Skills Assessment - Web Fuzzing
+- Jika di task sebelumnya sudah tersimpan domain `academy.htb` dan `admin.academy.htb` di file `/etc/hosts` maka anda perlu menghapusnya terlebih dahulu sebelum memulai task ini
+- Jalankan web target terlebih dahulu
+
+![alt text](https://github.com/rahardian-dwi-saputra/htb-academy-walkthrough/blob/main/Attacking%20Web%20Applications%20with%20Ffuf/assets/ffuf%2029.JPG)
+
+![alt text](https://github.com/rahardian-dwi-saputra/htb-academy-walkthrough/blob/main/Attacking%20Web%20Applications%20with%20Ffuf/assets/ffuf%2030.JPG)
+
+- **Question:** Run a sub-domain/vhost fuzzing scan on `*.academy.htb` for the IP shown above. What are all the sub-domains you can identify? (Only write the sub-domain name)
+- Tambahkan ip ke file `/etc/hosts`
+```sh
+echo "ip academy.htb" | sudo tee -a /etc/hosts
+```
+
+![alt text](https://github.com/rahardian-dwi-saputra/htb-academy-walkthrough/blob/main/Attacking%20Web%20Applications%20with%20Ffuf/assets/ffuf%2031.JPG)
+
+- Temukan sub-domain/vhost dengan tool `ffuf`. Pada percobaan pertama ditemukan banyak hasil dengan ukuran halaman 985 sehingga kita filter untuk halaman yang berukuran 985
+```sh
+ffuf -w /usr/share/seclists/Discovery/DNS/subdomains-top1million-5000.txt:FUZZ -u http://academy.htb:port/ -H 'Host: FUZZ.academy.htb' -c -ic -fc 403 -fs 985
+```
+
+![alt text](https://github.com/rahardian-dwi-saputra/htb-academy-walkthrough/blob/main/Attacking%20Web%20Applications%20with%20Ffuf/assets/ffuf%2032.JPG)
+
+- Ditemukan 3 vhost dari hasil pencarian
+
+![alt text](https://github.com/rahardian-dwi-saputra/htb-academy-walkthrough/blob/main/Attacking%20Web%20Applications%20with%20Ffuf/assets/ffuf%2033.JPG)
+
+![alt text](https://github.com/rahardian-dwi-saputra/htb-academy-walkthrough/blob/main/Attacking%20Web%20Applications%20with%20Ffuf/assets/ffuf%2034.JPG)
+
+![alt text](https://github.com/rahardian-dwi-saputra/htb-academy-walkthrough/blob/main/Attacking%20Web%20Applications%20with%20Ffuf/assets/ffuf%2035.JPG)
+
+- **Answer:**
+```sh
+archive, test, faculty
+```
+
+- **Question:** Before you run your page fuzzing scan, you should first run an extension fuzzing scan. What are the different extensions accepted by the domains?
+- Tambahkan vhost diatas ke file `/etc/hosts`
+```sh
+echo "ip archive.academy.htb test.academy.htb faculty.academy.htb" | sudo tee -a /etc/hosts
+```
+
+![alt text](https://github.com/rahardian-dwi-saputra/htb-academy-walkthrough/blob/main/Attacking%20Web%20Applications%20with%20Ffuf/assets/ffuf%2036.JPG)
+
+- Temukan ekstensi halaman `index` di masing-masing vhost
+```sh
+ffuf -w /usr/share/seclists/Discovery/Web-Content/web-extensions.txt:FUZZ -u http://archive.academy.htb:port/indexFUZZ -c -ic
+```
+
+![alt text](https://github.com/rahardian-dwi-saputra/htb-academy-walkthrough/blob/main/Attacking%20Web%20Applications%20with%20Ffuf/assets/ffuf%2037.JPG)
+
+![alt text](https://github.com/rahardian-dwi-saputra/htb-academy-walkthrough/blob/main/Attacking%20Web%20Applications%20with%20Ffuf/assets/ffuf%2038.JPG)
+
+```sh
+ffuf -w /usr/share/seclists/Discovery/Web-Content/web-extensions.txt:FUZZ -u http://test.academy.htb:port/indexFUZZ -c -ic
+```
+
+![alt text](https://github.com/rahardian-dwi-saputra/htb-academy-walkthrough/blob/main/Attacking%20Web%20Applications%20with%20Ffuf/assets/ffuf%2039.JPG)
+
+![alt text](https://github.com/rahardian-dwi-saputra/htb-academy-walkthrough/blob/main/Attacking%20Web%20Applications%20with%20Ffuf/assets/ffuf%2040.JPG)
+
+```sh
+ffuf -w /usr/share/seclists/Discovery/Web-Content/web-extensions.txt:FUZZ -u http://faculty.academy.htb:port/indexFUZZ -c -ic
+```
+
+![alt text](https://github.com/rahardian-dwi-saputra/htb-academy-walkthrough/blob/main/Attacking%20Web%20Applications%20with%20Ffuf/assets/ffuf%2041.JPG)
+
+![alt text](https://github.com/rahardian-dwi-saputra/htb-academy-walkthrough/blob/main/Attacking%20Web%20Applications%20with%20Ffuf/assets/ffuf%2042.JPG)
+
+- **Answer:**
+```sh
+.php, .phps, .php7
+```
+
+- **Question:** One of the pages you will identify should say 'You don't have access!'. What is the full page URL?
+- Tahap ini memerlukan waktu yang cukup lama, mungkin saja anda perlu merefresh kembali web target. Jika web target sudah direfresh, anda perlu mengganti IP vhost pada file `/etc/hosts` seperti pada langkah diatas 
+- Lakukan recursif fuzzing pada setiap vhost diatas
+```sh
+ffuf -w /usr/share/seclists/Discovery/Web-Content/directory-list-2.3-small.txt:FUZZ -u http://archive.academy.htb:port/FUZZ -recursion -e .php,.phps -c -ic -fc 403 -v
+```
+
+![alt text](https://github.com/rahardian-dwi-saputra/htb-academy-walkthrough/blob/main/Attacking%20Web%20Applications%20with%20Ffuf/assets/ffuf%2043.JPG)
+
+- Tidak ditemukan halaman yang valid dari hasil fuzzing diatas
+
+![alt text](https://github.com/rahardian-dwi-saputra/htb-academy-walkthrough/blob/main/Attacking%20Web%20Applications%20with%20Ffuf/assets/ffuf%2044.JPG)
+
+```sh
+ffuf -w /usr/share/seclists/Discovery/Web-Content/directory-list-2.3-small.txt:FUZZ -u http://test.academy.htb:port/FUZZ -recursion -e .php,.phps -c -ic -fc 403 -v
+```
+
+![alt text](https://github.com/rahardian-dwi-saputra/htb-academy-walkthrough/blob/main/Attacking%20Web%20Applications%20with%20Ffuf/assets/ffuf%2045.JPG)
+
+- Hingga proses selesai, tidak ditemukan page apapun
+
+![alt text](https://github.com/rahardian-dwi-saputra/htb-academy-walkthrough/blob/main/Attacking%20Web%20Applications%20with%20Ffuf/assets/ffuf%2046.JPG)
+
+```sh
+ffuf -w /usr/share/seclists/Discovery/Web-Content/directory-list-2.3-small.txt:FUZZ -u http://faculty.academy.htb:port/FUZZ -recursion -e .php,.phps,.php7 -c -ic -fc 403 -v
+```
+
+![alt text](https://github.com/rahardian-dwi-saputra/htb-academy-walkthrough/blob/main/Attacking%20Web%20Applications%20with%20Ffuf/assets/ffuf%2047.JPG)
+
+- Ditemukan halaman `/courses/linux-security.php7` pada hasil fuzzing diatas
+
+![alt text](https://github.com/rahardian-dwi-saputra/htb-academy-walkthrough/blob/main/Attacking%20Web%20Applications%20with%20Ffuf/assets/ffuf%2048.JPG)
+
+- Jika kita cek di browser halaman diatas berisi tampilan sebagai berikut
+
+![alt text](https://github.com/rahardian-dwi-saputra/htb-academy-walkthrough/blob/main/Attacking%20Web%20Applications%20with%20Ffuf/assets/ffuf%2049.JPG)
+
+- **Answer:**
+```sh
+http://faculty.academy.htb:PORT/courses/linux-security.php7
+```
+
+- **Question:**  In the page from the previous question, you should be able to find multiple parameters that are accepted by the page. What are they?
+- Lakukan fuzzing untuk mendapatkan nama parameter dengan method GET. Pada percobaan pertama ditemukan banyak hasil dengan ukuran halaman 774 sehingga kita filter untuk halaman yang berukuran 774
+```sh
+ffuf -w /usr/share/seclists/Discovery/Web-Content/burp-parameter-names.txt:FUZZ -u http://faculty.academy.htb:port/courses/linux-security.php7?FUZZ=key -c -ic -fs 774
+```
+
+![alt text](https://github.com/rahardian-dwi-saputra/htb-academy-walkthrough/blob/main/Attacking%20Web%20Applications%20with%20Ffuf/assets/ffuf%2050.JPG)
+
+- Ditemukan nama parameter `user` dari hasil fuzzing diatas
+
+![alt text](https://github.com/rahardian-dwi-saputra/htb-academy-walkthrough/blob/main/Attacking%20Web%20Applications%20with%20Ffuf/assets/ffuf%2051.JPG)
+
+- Lakukan fuzzing untuk mendapatkan nama parameter dengan method POST
+```sh
+ffuf -w /usr/share/seclists/Discovery/Web-Content/burp-parameter-names.txt:FUZZ -d 'FUZZ=key' -H 'Content-Type: application/x-www-form-urlencoded' -u http://faculty.academy.htb:port/courses/linux-security.php7 -c -ic -fs 774
+```
+
+![alt text](https://github.com/rahardian-dwi-saputra/htb-academy-walkthrough/blob/main/Attacking%20Web%20Applications%20with%20Ffuf/assets/ffuf%2052.JPG)
+
+- Ditemukan nama parameter `user` dan `username` dari hasil fuzzing diatas
+
+![alt text](https://github.com/rahardian-dwi-saputra/htb-academy-walkthrough/blob/main/Attacking%20Web%20Applications%20with%20Ffuf/assets/ffuf%2053.JPG)
+
+- **Question:** Try fuzzing the parameters you identified for working values. One of them should return a flag. What is the content of the flag?
