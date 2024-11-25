@@ -351,3 +351,8 @@ ffuf -w /usr/share/seclists/Discovery/Web-Content/burp-parameter-names.txt:FUZZ 
 ```
 
 ![alt text](https://github.com/rahardian-dwi-saputra/htb-academy-walkthrough/blob/main/Attacking%20Web%20Applications%20with%20Ffuf/assets/ffuf%2056.JPG)
+
+- **Answer:**
+```sh
+HTB{w3b_fuzz1n6_m4573r}
+```
