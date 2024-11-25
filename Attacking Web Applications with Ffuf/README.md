@@ -347,7 +347,7 @@ ffuf -w /usr/share/seclists/Usernames/Names/names.txt:FUZZ -X POST -d 'username=
 
 - Lakukan post data menggunakan tool `curl`
 ```sh
-ffuf -w /usr/share/seclists/Discovery/Web-Content/burp-parameter-names.txt:FUZZ -u http://faculty.academy.htb:port/courses/linux-security.php7?FUZZ=key -c -ic -fs 774
+curl -d "username=harry" -X POST http://faculty.academy.htb:port/courses/linux-security.php7
 ```
 
 ![alt text](https://github.com/rahardian-dwi-saputra/htb-academy-walkthrough/blob/main/Attacking%20Web%20Applications%20with%20Ffuf/assets/ffuf%2056.JPG)
