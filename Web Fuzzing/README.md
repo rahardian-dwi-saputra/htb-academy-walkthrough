@@ -41,7 +41,7 @@ ffuf -w /usr/share/seclists/Discovery/Web-Content/common.txt -u http://ip:port/w
 
 - **Answer:**
 ```sh
-HTB{w3b_f1l3_fuzz1ng_fl4g}
+HTB{***}
 ```
 
 ## Recursive Fuzzing
@@ -94,7 +94,7 @@ ffuf -w /usr/share/seclists/Discovery/Web-Content/directory-list-2.3-medium.txt 
 
 - **Answer:**
 ```sh
-HTB{d33p3r_d1rector1es_ar3_c00l}
+HTB{***}
 ```
 
 ## Parameter and Value Fuzzing
@@ -136,7 +136,7 @@ ffuf -w /usr/share/seclists/Discovery/Web-Content/common.txt -u http://ip:port/g
 
 - **Answer:**
 ```sh
-HTB{g3t_fuzz1ng_succ3ss}
+HTB{***}
 ```
 
 - **Question:** What flag do you find when successfully fuzzing the POST parameter?
@@ -167,7 +167,7 @@ curl -d "y=SUNWmc" http://ip:port/post.php
 
 - **Answer:**
 ```sh
-HTB{p0st_fuzz1ng_succ3ss}
+HTB{***}
 ```
 
 ## Virtual Host and Subdomain Fuzzing
@@ -249,7 +249,7 @@ curl -d "y=SUNWmc" http://ip:port/post.php
 
 - **Answer:**
 ```sh
-HTB{p0st_fuzz1ng_succ3ss}
+HTB{***}
 ```
 
 ## Validating Findings
@@ -426,5 +426,5 @@ curl http://hidden.fuzzing_fun.htb:port/godeep/stoneedge/bbclone/typo3/index.php
 
 - **Answer:**
 ```sh
-HTB{w3b_fuzz1ng_sk1lls}
+HTB{***}
 ```

