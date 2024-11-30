@@ -21,6 +21,13 @@ sudo openvpn nama_file
 
 ![alt text](https://github.com/rahardian-dwi-saputra/htb-academy-walkthrough/blob/main/setup/setup%203.JPG)
 
+- Untuk mengetahui IP dari VPN, buka terminal baru lalu ketik perintah berikut ini. IP VPN berada di interface `tun0`
+```sh
+ifconfig -a
+```
+
+![alt text](https://github.com/rahardian-dwi-saputra/htb-academy-walkthrough/blob/main/setup/setup%204.JPG)
+
 ## Modul
 - [Linux Fundamentals](Linux%20fundamentals)
 - [Web Requests](Web%20requests)

